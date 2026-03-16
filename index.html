@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ACCI Security Group — Free Business Security Scan</title>
+  <meta name="description" content="Free automated scan finds leaked passwords, exposed files, and unauthorized AI tools in your business. We fix everything we find — flat fee, 24 hours." />
+  <style>
+    /* ── RESET & BASE ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #07090f;
+      color: #e2e8f0;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ── TOKENS ───────────────────────────────────────────────── */
+    :root {
+      --green: #00d97e;
+      --green-dim: rgba(0, 217, 126, 0.15);
+      --green-border: rgba(0, 217, 126, 0.35);
+      --card-bg: #111827;
+      --card-border: rgba(255,255,255,0.07);
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --red-accent: #ff4d4d;
+      --max-w: 1100px;
+    }
+
+    /* ── LAYOUT HELPERS ───────────────────────────────────────── */
+    .container { width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 20px; }
+    .section { padding: 80px 0; }
+    .section-sm { padding: 60px 0; }
+    .center { text-align: center; }
+
+    /* ── NAV ──────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(7, 9, 15, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 0;
+    }
+    nav .inner {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: var(--max-w); margin: 0 auto; padding: 0 20px;
+    }
+    .nav-logo {
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.02em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo span { color: var(--green); }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links a { font-size: 0.875rem; color: var(--text-muted); transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta {
+      background: var(--green); color: #000 !important;
+      font-weight: 700; font-size: 0.875rem;
+      padding: 10px 20px; border-radius: 8px;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+    @media (max-width: 600px) {
+      .nav-links .hide-mobile { display: none; }
+    }
+
+    /* ── HERO ─────────────────────────────────────────────────── */
+    .hero {
+      padding: 80px 0 70px;
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,217,126,0.12) 0%, transparent 70%);
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-dim); border: 1px solid var(--green-border);
+      border-radius: 100px; padding: 6px 14px;
+      font-size: 0.78rem; font-weight: 600; color: var(--green);
+      letter-spacing: 0.04em; text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800; line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #fff;
+      max-width: 720px; margin: 0 auto 20px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--green), #00b8ff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--text-muted); max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+
+    /* ── SCAN FORM ────────────────────────────────────────────── */
+    .scan-form {
+      display: flex; gap: 0;
+      max-width: 520px; margin: 0 auto 20px;
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 0 0 1px var(--green-border), 0 8px 32px rgba(0,217,126,0.1);
+    }
+    .scan-form input {
+      flex: 1; min-width: 0;
+      background: #0f1420; border: none; outline: none;
+      padding: 16px 20px; font-size: 1rem; color: #fff;
+      border-radius: 12px 0 0 12px;
+    }
+    .scan-form input::placeholder { color: var(--text-dim); }
+    .scan-form button {
+      background: var(--green); color: #000;
+      font-weight: 800; font-size: 0.95rem;
+      border: none; cursor: pointer;
+      padding: 16px 24px; white-space: nowrap;
+      border-radius: 0 12px 12px 0;
+      transition: opacity 0.2s;
+    }
+    .scan-form button:hover { opacity: 0.88; }
+    @media (max-width: 520px) {
+      .scan-form { flex-direction: column; border-radius: 12px; }
+      .scan-form input { border-radius: 12px 12px 0 0; text-align: center; }
+      .scan-form button { border-radius: 0 0 12px 12px; padding: 16px; font-size: 1rem; }
+    }
+
+    /* ── TRUST PILLS ──────────────────────────────────────────── */
+    .trust-pills {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 10px; margin-bottom: 28px;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px; padding: 6px 14px;
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+    .pill .icon { font-size: 0.85rem; }
+
+    /* ── SECONDARY LINK ───────────────────────────────────────── */
+    .hero-secondary {
+      font-size: 0.875rem; color: var(--text-dim);
+    }
+    .hero-secondary a {
+      color: var(--green); text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .hero-secondary a:hover { opacity: 0.8; }
+
+    /* ── HOW IT WORKS ─────────────────────────────────────────── */
+    .hiw { background: var(--card-bg); }
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--green);
+      margin-bottom: 12px;
+    }
+    .section-heading {
+      font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+      font-weight: 800; line-height: 1.2;
+      letter-spacing: -0.02em; color: #fff;
+      margin-bottom: 14px;
+    }
+    .section-sub {
+      font-size: 1rem; color: var(--text-muted);
+      max-width: 520px; margin: 0 auto 56px;
+      line-height: 1.7;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto 48px;
+    }
+    /* connector line between steps */
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 36px; left: calc(16.66% + 20px); right: calc(16.66% + 20px);
+      height: 1px;
+      background: linear-gradient(90deg, var(--green-border), var(--green-border));
+      pointer-events: none;
+    }
+    .step {
+      text-align: center;
+      padding: 0 24px;
+      position: relative;
+    }
+    .step-num {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--green-dim);
+      border: 1px solid var(--green-border);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .step-num .num-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: var(--green); color: #000;
+      font-size: 0.65rem; font-weight: 800;
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step h3 {
+      font-size: 1.05rem; font-weight: 700;
+      color: #fff; margin-bottom: 10px;
+    }
+    .step p {
+      font-size: 0.9rem; color: var(--text-muted);
+      line-height: 1.65;
+    }
+    /* guarantee box */
+    .guarantee {
+      max-width: 620px; margin: 0 auto;
+      background: rgba(0,217,126,0.06);
+      border: 1px solid var(--green-border);
+      border-radius: 14px;
+      padding: 24px 32px;
+      display: flex; align-items: flex-start; gap: 16px;
+      text-align: left;
+    }
+    .guarantee-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+    .guarantee-text strong {
+      display: block; font-size: 1rem; color: #fff;
+      margin-bottom: 6px;
+    }
+    .guarantee-text p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+    @media (max-width: 680px) {
+      .steps { grid-template-columns: 1fr; gap: 40px; }
+      .steps::before { display: none; }
+      .guarantee { flex-direction: column; gap: 12px; padding: 20px; }
+    }
+
+    /* ── SERVICES ────────────────────────────────────────────── */
+    .services { background: #07090f; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .svc-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px;
+      display: flex; flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .svc-card:hover {
+      border-color: var(--green-border);
+      transform: translateY(-2px);
+    }
+    .svc-icon {
+      font-size: 2rem; margin-bottom: 16px; line-height: 1;
+    }
+    .svc-card h3 {
+      font-size: 1.1rem; font-weight: 700; color: #fff;
+      margin-bottom: 20px; line-height: 1.3;
+    }
+    .svc-row {
+      display: flex; gap: 10px; margin-bottom: 10px;
+      align-items: flex-start;
+    }
+    .svc-badge {
+      flex-shrink: 0;
+      font-size: 0.65rem; font-weight: 800;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 4px;
+      margin-top: 2px;
+    }
+    .badge-free {
+      background: rgba(0,217,126,0.15);
+      color: var(--green);
+      border: 1px solid var(--green-border);
+    }
+    .badge-fix {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .svc-row p {
+      font-size: 0.875rem; color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .svc-divider {
+      border: none; border-top: 1px solid var(--card-border);
+      margin: 20px 0;
+    }
+    .svc-footer {
+      display: flex; flex-direction: column; gap: 12px;
+      margin-top: auto;
+    }
+    .svc-price {
+      font-size: 1.4rem; font-weight: 800; color: #fff;
+    }
+    .svc-price span {
+      font-size: 0.75rem; font-weight: 400;
+      color: var(--text-dim); display: block;
+      margin-top: 1px;
+    }
+    .svc-btns {
+      display: flex; flex-direction: column; gap: 8px; width: 100%;
+    }
+    .svc-cta {
+      display: block; width: 100%;
+      background: var(--green); color: #000;
+      font-weight: 800; font-size: 0.875rem;
+      padding: 13px 20px; border-radius: 8px;
+      border: none; cursor: pointer;
+      transition: opacity 0.2s;
+      text-align: center;
+    }
+    .svc-cta:hover { opacity: 0.85; }
+    .svc-cta.outline {
+      background: transparent;
+      color: var(--green);
+      border: 1px solid var(--green-border);
+    }
+    .svc-cta.outline:hover { background: var(--green-dim); }
+    /* no-free label for card 4 */
+    .no-free {
+      font-size: 0.8rem; color: var(--text-dim);
+      font-style: italic; margin-bottom: 10px;
+    }
+    @media (max-width: 680px) {
+      .services-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── TRUST SIGNALS ───────────────────────────────────────── */
+    .trust { background: var(--card-bg); }
+    .trust-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 32px;
+      max-width: 1000px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    /* counter */
+    .trust-counter {
+      background: rgba(0,217,126,0.06);
+      border: 1px solid var(--green-border);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .counter-num {
+      font-size: 3rem; font-weight: 800;
+      color: var(--green); line-height: 1;
+      margin-bottom: 8px;
+    }
+    .counter-label {
+      font-size: 0.875rem; color: var(--text-muted);
+      line-height: 1.5;
+    }
+    /* testimonials */
+    .testimonials { display: flex; flex-direction: column; gap: 20px; }
+    .testi-card {
+      background: #07090f;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px 28px;
+    }
+    .testi-stars { color: #f59e0b; font-size: 0.85rem; margin-bottom: 12px; letter-spacing: 2px; }
+    .testi-quote {
+      font-size: 0.95rem; color: #cbd5e1;
+      line-height: 1.65; font-style: italic;
+      margin-bottom: 16px;
+    }
+    .testi-author { font-size: 0.8rem; color: var(--text-dim); }
+    .testi-author strong { color: var(--text-muted); font-style: normal; display: block; }
+    /* badges column */
+    .trust-badges { display: flex; flex-direction: column; gap: 14px; }
+    .trust-badge-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: #07090f;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .trust-badge-item .bi { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+    .trust-badge-item .bt { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+    .trust-badge-item .bt strong { color: #fff; display: block; margin-bottom: 2px; font-size: 0.85rem; }
+    @media (max-width: 860px) {
+      .trust-grid { grid-template-columns: 1fr 1fr; }
+      .trust-counter { grid-column: 1 / -1; }
+    }
+    @media (max-width: 560px) {
+      .trust-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── FINAL CTA ───────────────────────────────────────────── */
+    .final-cta {
+      background: #07090f;
+      padding: 100px 0;
+    }
+    .cta-card {
+      max-width: 680px; margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--green-border);
+      border-radius: 24px;
+      padding: 56px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%; transform: translateX(-50%);
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,217,126,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-card h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 800; color: #fff;
+      line-height: 1.2; margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+    .cta-card h2 em {
+      font-style: normal; color: var(--green);
+    }
+    .cta-card p {
+      font-size: 1rem; color: var(--text-muted);
+      margin-bottom: 36px; line-height: 1.7;
+      max-width: 460px; margin-left: auto; margin-right: auto;
+    }
+    .cta-card p:last-of-type { margin-bottom: 0; }
+    .cta-email {
+      margin-top: 24px;
+      font-size: 0.85rem; color: var(--text-dim);
+    }
+    .cta-email a { color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; }
+    .cta-email a:hover { color: var(--green); }
+
+    /* ── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      background: #07090f;
+      border-top: 1px solid var(--card-border);
+      padding: 32px 20px;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-logo { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); }
+    .footer-logo span { color: var(--green); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 0.8rem; color: var(--text-dim); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-muted); }
+    .footer-copy { font-size: 0.8rem; color: var(--text-dim); }
+    @media (max-width: 600px) {
+      .cta-card { padding: 36px 24px; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+
+
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ──────────────────────────────────────────────────── -->
+  <nav>
+    <div class="inner">
+      <div class="nav-logo">🔒 <span>ACCI</span> Security Group</div>
+      <div class="nav-links">
+        <a class="hide-mobile" href="#how-it-works">How It Works</a>
+        <a class="hide-mobile" href="#services">Services</a>
+        <a class="hide-mobile" href="#pricing">Pricing</a>
+        <a class="nav-cta" href="#scan">Scan Free →</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ─────────────────────────────────────────────────── -->
+  <section class="hero" id="scan">
+    <div class="container">
+
+      <div class="hero-eyebrow">Free real-time security scan — no signup required</div>
+
+      <h1>Is Your Business <em>Leaking Data</em> Right Now?</h1>
+
+      <p class="hero-sub">
+        Free scan. Real results. We fix what we find —
+        flat fee, done in 24 hours.
+      </p>
+
+      <form class="scan-form" onsubmit="handleScan(event)">
+        <input
+          type="text"
+          id="domain-input"
+          placeholder="yourcompany.com"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="none"
+          spellcheck="false"
+        />
+        <button type="submit">Scan My Business Free →</button>
+      </form>
+
+      <div class="trust-pills">
+        <span class="pill"><span class="icon">🔒</span> Read-only scan</span>
+        <span class="pill"><span class="icon">⚡</span> Results in 30 seconds</span>
+        <span class="pill"><span class="icon">💳</span> No credit card</span>
+      </div>
+
+      <p class="hero-secondary">
+        Already know what you need?
+        <a href="#services">See services &amp; pricing ↓</a>
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ─────────────────────────────────────────── -->
+  <section class="section hiw" id="how-it-works">
+    <div class="container center">
+
+      <p class="section-label">How It Works</p>
+      <h2 class="section-heading">Scan. See. Fixed.</h2>
+      <p class="section-sub">Three steps. No tech knowledge needed. We do everything — you just tell us what to fix.</p>
+
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">
+            🔍
+            <span class="num-badge">1</span>
+          </div>
+          <h3>Enter Your Domain</h3>
+          <p>Type your website address and hit scan. Takes 30 seconds — no login, no credit card, no commitment.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-num">
+            📋
+            <span class="num-badge">2</span>
+          </div>
+          <h3>See What's Exposed</h3>
+          <p>You get a plain-English breakdown of every risk we found — passwords, files, tools, and more.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-num">
+            🔧
+            <span class="num-badge">3</span>
+          </div>
+          <h3>We Fix It For You</h3>
+          <p>Pick what you want fixed. Flat fee, no surprises. We handle everything and send you a full report within 24 hours.</p>
+        </div>
+
+      </div>
+
+      <div class="guarantee">
+        <div class="guarantee-icon">🛡️</div>
+        <div class="guarantee-text">
+          <strong>If we don't find anything, you don't pay. Ever.</strong>
+          <p>The scan is always free. If your security is already solid, we'll tell you — and you owe us nothing. We only charge when we find real problems worth fixing.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── SERVICES ─────────────────────────────────────────────── -->
+  <section class="section services" id="services">
+    <div class="container center">
+
+      <p class="section-label">What We Do</p>
+      <h2 class="section-heading">What We Scan — And What We Fix</h2>
+      <p class="section-sub">The scan is always free. Pay only if you want us to fix it.</p>
+
+      <div class="services-grid">
+
+        <!-- Card 1: Leaked Passwords -->
+        <div class="svc-card">
+          <div class="svc-icon">🔑</div>
+          <h3>Is Your Password Exposed?</h3>
+          <div class="svc-row">
+            <span class="svc-badge badge-free">Free</span>
+            <p>We search the internet for your company's leaked passwords and API keys.</p>
+          </div>
+          <div class="svc-row">
+            <span class="svc-badge badge-fix">We fix</span>
+            <p>Automatically flag, revoke, and replace every exposed credential we find.</p>
+          </div>
+          <hr class="svc-divider" />
+          <div class="svc-footer">
+            <div class="svc-price">$249 <span>one-time · done in 24h</span></div>
+            <div class="svc-btns">
+              <a class="svc-cta" href="https://buy.stripe.com/eVq00jcWb11j87IerE43S00" target="_blank">Pay $249 with Card →</a>
+              <a class="svc-cta outline" href="https://www.paypal.com/ncp/payment/4L63UJWFRUFQN" target="_blank">Pay with PayPal →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Shadow AI -->
+        <div class="svc-card">
+          <div class="svc-icon">🤖</div>
+          <h3>Are Employees Using Risky AI Tools?</h3>
+          <div class="svc-row">
+            <span class="svc-badge badge-free">Free</span>
+            <p>We detect unauthorized AI apps operating under your company's name.</p>
+          </div>
+          <div class="svc-row">
+            <span class="svc-badge badge-fix">We fix</span>
+            <p>Full documented sweep with exact shutdown steps — delivered as a written report.</p>
+          </div>
+          <hr class="svc-divider" />
+          <div class="svc-footer">
+            <div class="svc-price">$349 <span>one-time · report in 48h</span></div>
+            <div class="svc-btns">
+              <a class="svc-cta" href="https://buy.stripe.com/9B6bJ1e0f5hz4Vw97k43S01" target="_blank">Pay $349 with Card →</a>
+              <a class="svc-cta outline" href="https://www.paypal.com/ncp/payment/P752DEU2C2PMQ" target="_blank">Pay with PayPal →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Exposed Files -->
+        <div class="svc-card">
+          <div class="svc-icon">☁️</div>
+          <h3>Are Your Files Open Online?</h3>
+          <div class="svc-row">
+            <span class="svc-badge badge-free">Free</span>
+            <p>We find private documents and databases accidentally exposed to the public internet.</p>
+          </div>
+          <div class="svc-row">
+            <span class="svc-badge badge-fix">We fix</span>
+            <p>Full audit with exact steps to lock everything down, plus a 30-day follow-up check.</p>
+          </div>
+          <hr class="svc-divider" />
+          <div class="svc-footer">
+            <div class="svc-price">From $599 <span>one-time · audit in 48h</span></div>
+            <div class="svc-btns">
+              <a class="svc-cta" href="https://buy.stripe.com/fZu3cv2hxcK14Vw1ES43S02" target="_blank">Pay $599 with Card →</a>
+              <a class="svc-cta outline" href="https://www.paypal.com/ncp/payment/DNV2HVXHWMZRN" target="_blank">Pay with PayPal →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: OSINT Dossier -->
+        <div class="svc-card">
+          <div class="svc-icon">🕵️</div>
+          <h3>Who Are You Really Dealing With?</h3>
+          <p class="no-free">No scan needed — we build the full picture from public records.</p>
+          <div class="svc-row">
+            <span class="svc-badge badge-fix">We deliver</span>
+            <p>A 5-page professional dossier on any company or person — the same way investigators do it.</p>
+          </div>
+          <div class="svc-row" style="margin-top:6px;">
+            <span class="svc-badge badge-free">Used by</span>
+            <p>Investors, legal teams, HR departments, and anyone closing a big deal.</p>
+          </div>
+          <hr class="svc-divider" />
+          <div class="svc-footer">
+            <div class="svc-price">$299–$450 <span>flat fee · PDF in 48h</span></div>
+            <div class="svc-btns">
+              <a class="svc-cta" href="https://buy.stripe.com/fZu3cvf4jcK187I1ES43S03" target="_blank">Standard $299 — Card →</a>
+              <a class="svc-cta" href="https://buy.stripe.com/8x200jbS7fWdafQabo43S04" target="_blank">Premium $450 — Card →</a>
+              <a class="svc-cta outline" href="https://www.paypal.com/ncp/payment/24RHNJQK3YFKA" target="_blank">Standard $299 — PayPal →</a>
+              <a class="svc-cta outline" href="https://www.paypal.com/ncp/payment/YGHHMEDLX4GRL" target="_blank">Premium $450 — PayPal →</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TRUST SIGNALS ──────────────────────────────────────── -->
+  <section class="section trust" id="trust">
+    <div class="container">
+
+      <div class="center" style="margin-bottom: 48px;">
+        <p class="section-label">Why Businesses Trust Us</p>
+        <h2 class="section-heading">Real Results. Zero Risk.</h2>
+      </div>
+
+      <div class="trust-grid">
+
+        <!-- Counter -->
+        <div class="trust-counter">
+          <div class="counter-num">247+</div>
+          <div class="counter-label">businesses<br/>scanned &amp; protected</div>
+        </div>
+
+        <!-- Testimonials -->
+        <div class="testimonials">
+          <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p class="testi-quote">"I had no idea my team was using 3 unauthorized AI tools that were uploading our client files to the cloud. Acci found them in minutes. Fixed the same day."</p>
+            <div class="testi-author">
+              <strong>Sarah M.</strong>
+              Law Firm Owner · Miami, FL
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="testi-stars">★★★★★</div>
+            <p class="testi-quote">"They found an API key that had been leaking since 2023. I didn't even know what that meant — they explained it in plain English and fixed everything. Worth every penny."</p>
+            <div class="testi-author">
+              <strong>Carlos R.</strong>
+              E-commerce Founder · Austin, TX
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="trust-badges">
+          <div class="trust-badge-item">
+            <span class="bi">🔒</span>
+            <div class="bt">
+              <strong>Read-only scan</strong>
+              We never store, modify, or share your data
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <span class="bi">⚡</span>
+            <div class="bt">
+              <strong>Fixed in under 24 hours</strong>
+              Most issues resolved same day
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <span class="bi">📄</span>
+            <div class="bt">
+              <strong>Full written report</strong>
+              Every finding documented in plain English
+            </div>
+          </div>
+          <div class="trust-badge-item">
+            <span class="bi">🇺🇸</span>
+            <div class="bt">
+              <strong>Based in Miami, FL</strong>
+              US-based team you can actually reach
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FINAL CTA ─────────────────────────────────────────── -->
+  <section class="final-cta" id="final-cta">
+    <div class="container">
+      <div class="cta-card">
+
+        <h2>Still not sure? <em>The scan is free.</em></h2>
+        <p>
+          No credit card. No signup. 60 seconds.<br/>
+          See exactly what's exposed on your domain — then decide.
+        </p>
+
+        <form class="scan-form" onsubmit="handleScan2(event)" style="margin-bottom: 16px;">
+          <input
+            type="text"
+            id="domain-input-2"
+            placeholder="yourcompany.com"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="none"
+            spellcheck="false"
+          />
+          <button type="submit">Scan My Business Free →</button>
+        </form>
+
+        <div class="trust-pills" style="margin-bottom: 0;">
+          <span class="pill"><span class="icon">🔒</span> Read-only</span>
+          <span class="pill"><span class="icon">💳</span> No credit card</span>
+          <span class="pill"><span class="icon">🛡️</span> No findings = no charge</span>
+        </div>
+
+        <p class="cta-email">
+          Prefer email? Reach us at
+          <a href="mailto:david.collins@accisecuritygroup.com">david.collins@accisecuritygroup.com</a>
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">🔒 <span>ACCI</span> Security Group</div>
+      <div class="footer-links">
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="intake.html">Service Intake</a>
+        <a href="mailto:david.collins@accisecuritygroup.com">Contact</a>
+      </div>
+      <div class="footer-copy">© 2026 ACCI Security Group · Miami, FL</div>
+    </div>
+  </footer>
+
+  <script>
+    function handleScan(e) {
+      e.preventDefault();
+      const domain = document.getElementById('domain-input').value.trim();
+      if (!domain) { document.getElementById('domain-input').focus(); return; }
+      // TODO: wire to real scan endpoint
+      window.location.href = '#services';
+    }
+    function handleScan2(e) {
+      e.preventDefault();
+      const domain = document.getElementById('domain-input-2').value.trim();
+      if (!domain) { document.getElementById('domain-input-2').focus(); return; }
+      // TODO: wire to real scan endpoint
+      window.location.href = '#services';
+    }
+  </script>
+
+</body>
+</html>
