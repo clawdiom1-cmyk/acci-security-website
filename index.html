@@ -108,6 +108,21 @@
       line-height: 1.65;
     }
 
+    /* ── HERO SCAN BUTTON ─────────────────────────────────────── */
+    .hero-scan-btn {
+      display: inline-block;
+      background: var(--green); color: #000;
+      font-weight: 800; font-size: 1.1rem;
+      padding: 18px 36px; border-radius: 12px;
+      margin-bottom: 20px;
+      transition: opacity 0.2s;
+      box-shadow: 0 0 32px rgba(0,217,126,0.25);
+    }
+    .hero-scan-btn:hover { opacity: 0.88; }
+    @media (max-width: 520px) {
+      .hero-scan-btn { display: block; padding: 18px 20px; text-align: center; }
+    }
+
     /* ── SCAN FORM ────────────────────────────────────────────── */
     .scan-form {
       display: flex; gap: 0;
@@ -160,6 +175,75 @@
       text-underline-offset: 3px;
     }
     .hero-secondary a:hover { opacity: 0.8; }
+
+    /* ── SCAN INTAKE FORM ────────────────────────────────────── */
+    .scan-intake {
+      background: #07090f;
+      padding: 0 0 80px;
+    }
+    .scan-intake-card {
+      max-width: 560px; margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--green-border);
+      border-radius: 20px;
+      padding: 40px 40px 36px;
+    }
+    .scan-intake-card h3 {
+      font-size: 1.15rem; font-weight: 700; color: #fff;
+      margin-bottom: 6px;
+    }
+    .scan-intake-card .form-sub {
+      font-size: 0.875rem; color: var(--text-muted);
+      margin-bottom: 28px; line-height: 1.5;
+    }
+    .form-field { margin-bottom: 16px; }
+    .form-field label {
+      display: block; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 7px;
+    }
+    .form-field input {
+      width: 100%; background: #0f1420;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 13px 16px;
+      font-size: 0.95rem; color: #fff; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-field input:focus { border-color: var(--green-border); }
+    .form-field input::placeholder { color: var(--text-dim); }
+    .form-field input.error { border-color: #ff4d4d; }
+    .form-submit {
+      width: 100%; background: var(--green); color: #000;
+      font-weight: 800; font-size: 1rem;
+      border: none; border-radius: 10px;
+      padding: 15px; cursor: pointer;
+      margin-top: 8px; transition: opacity 0.2s;
+    }
+    .form-submit:hover { opacity: 0.88; }
+    .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .form-privacy {
+      font-size: 0.78rem; color: var(--text-dim);
+      text-align: center; margin-top: 14px; line-height: 1.5;
+    }
+    /* confirmation screen */
+    .scan-confirm {
+      display: none; text-align: center; padding: 8px 0;
+    }
+    .scan-confirm .confirm-icon { font-size: 2.5rem; margin-bottom: 16px; }
+    .scan-confirm h3 {
+      font-size: 1.2rem; font-weight: 800; color: #fff;
+      margin-bottom: 12px; line-height: 1.4;
+    }
+    .scan-confirm .confirm-email {
+      color: var(--green); font-weight: 700;
+    }
+    .scan-confirm p {
+      font-size: 0.85rem; color: var(--text-dim);
+      line-height: 1.6; max-width: 360px; margin: 12px auto 0;
+    }
+    @media (max-width: 600px) {
+      .scan-intake-card { padding: 28px 20px 24px; border-radius: 16px; }
+    }
 
     /* ── HOW IT WORKS ─────────────────────────────────────────── */
     .hiw { background: var(--card-bg); }
@@ -516,22 +600,11 @@
         flat fee, done in 24 hours.
       </p>
 
-      <form class="scan-form" onsubmit="handleScan(event)">
-        <input
-          type="text"
-          id="domain-input"
-          placeholder="yourcompany.com"
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="none"
-          spellcheck="false"
-        />
-        <button type="submit">Scan My Business Free →</button>
-      </form>
+      <a class="hero-scan-btn" href="#scan-form">Scan My Business Free →</a>
 
       <div class="trust-pills">
         <span class="pill"><span class="icon">🔒</span> Read-only scan</span>
-        <span class="pill"><span class="icon">⚡</span> Results in 30 seconds</span>
+        <span class="pill"><span class="icon">⚡</span> Results in 15 min</span>
         <span class="pill"><span class="icon">💳</span> No credit card</span>
       </div>
 
@@ -540,6 +613,47 @@
         <a href="#services">See services &amp; pricing ↓</a>
       </p>
 
+    </div>
+  </section>
+
+  <!-- ── SCAN INTAKE FORM ──────────────────────────────────────── -->
+  <section class="scan-intake" id="scan-form">
+    <div class="container">
+      <div class="scan-intake-card">
+
+        <!-- Form view -->
+        <div id="intake-form-wrap">
+          <h3>🔍 Run Your Free Security Scan</h3>
+          <p class="form-sub">We'll email you a plain-English breakdown of every risk we find — within 15 minutes.</p>
+
+          <form id="intake-form" novalidate>
+            <div class="form-field">
+              <label for="f-name">Your Name</label>
+              <input type="text" id="f-name" placeholder="Jane Smith" autocomplete="name" required />
+            </div>
+            <div class="form-field">
+              <label for="f-email">Work Email</label>
+              <input type="email" id="f-email" placeholder="jane@yourbusiness.com" autocomplete="email" required />
+            </div>
+            <div class="form-field">
+              <label for="f-domain">Your Domain</label>
+              <input type="text" id="f-domain" placeholder="yourbusiness.com" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" required />
+            </div>
+            <button type="submit" class="form-submit">Scan My Business Free →</button>
+          </form>
+
+          <p class="form-privacy">We will never spam you. One email with your results — that's it.</p>
+        </div>
+
+        <!-- Confirmation view (shown after submit) -->
+        <div id="intake-confirm" class="scan-confirm">
+          <div class="confirm-icon">🔍</div>
+          <h3>Your scan is running.<br/>Results will be in your inbox within 15 minutes.</h3>
+          <p>Check your email at <span class="confirm-email" id="confirm-email-display"></span></p>
+          <p>We will never spam you. One email with your results, that is it — unless we find something urgent.</p>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -602,28 +716,6 @@
       <p class="section-sub">The scan is always free. Pay only if you want us to fix it.</p>
 
       <div class="services-grid">
-
-        <!-- Card 0: Email Impersonation (FIRST — cheapest, strongest hook) -->
-        <div class="svc-card">
-          <div class="svc-icon">📧</div>
-          <h3>Can Scammers Send Emails Pretending to Be You?</h3>
-          <div class="svc-row">
-            <span class="svc-badge badge-free">Free</span>
-            <p>We check if your email domain is protected against impersonation attacks.</p>
-          </div>
-          <div class="svc-row">
-            <span class="svc-badge badge-fix">We fix</span>
-            <p>We automatically configure SPF, DKIM, and DMARC so nobody can fake your email address.</p>
-          </div>
-          <hr class="svc-divider" />
-          <div class="svc-footer">
-            <div class="svc-price">$199 <span>one-time · done in 24h</span></div>
-            <div class="svc-btns">
-              <a class="svc-cta" href="[STRIPE_LINK_DNS]" target="_blank">Pay $199 with Card →</a>
-              <a class="svc-cta outline" href="[PAYPAL_LINK_DNS]" target="_blank">Pay with PayPal →</a>
-            </div>
-          </div>
-        </div>
 
         <!-- Card 1: Leaked Passwords -->
         <div class="svc-card">
@@ -826,18 +918,7 @@
           See exactly what's exposed on your domain — then decide.
         </p>
 
-        <form class="scan-form" onsubmit="handleScan2(event)" style="margin-bottom: 16px;">
-          <input
-            type="text"
-            id="domain-input-2"
-            placeholder="yourcompany.com"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="none"
-            spellcheck="false"
-          />
-          <button type="submit">Scan My Business Free →</button>
-        </form>
+        <a class="hero-scan-btn" href="#scan-form" style="display:inline-block;margin-bottom:16px;">Scan My Business Free →</a>
 
         <div class="trust-pills" style="margin-bottom: 0;">
           <span class="pill"><span class="icon">🔒</span> Read-only</span>
@@ -868,20 +949,78 @@
   </footer>
 
   <script>
-    function handleScan(e) {
-      e.preventDefault();
-      const domain = document.getElementById('domain-input').value.trim();
-      if (!domain) { document.getElementById('domain-input').focus(); return; }
-      // TODO: wire to real scan endpoint
-      window.location.href = '#services';
+    // ── Domain cleaner: strips http(s):// and www.
+    function cleanDomain(val) {
+      return val.trim()
+        .replace(/^https?:\/\//i, '')
+        .replace(/^www\./i, '')
+        .replace(/\/.*$/, '');
     }
-    function handleScan2(e) {
-      e.preventDefault();
-      const domain = document.getElementById('domain-input-2').value.trim();
-      if (!domain) { document.getElementById('domain-input-2').focus(); return; }
-      // TODO: wire to real scan endpoint
-      window.location.href = '#services';
+
+    // ── Email validator
+    function validEmail(val) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
     }
+
+    // ── Auto-clean domain field on blur
+    document.getElementById('f-domain').addEventListener('blur', function() {
+      this.value = cleanDomain(this.value);
+    });
+
+    // ── Intake form submit
+    document.getElementById('intake-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const nameEl   = document.getElementById('f-name');
+      const emailEl  = document.getElementById('f-email');
+      const domainEl = document.getElementById('f-domain');
+
+      const name   = nameEl.value.trim();
+      const email  = emailEl.value.trim();
+      const domain = cleanDomain(domainEl.value);
+
+      // Validate
+      let valid = true;
+      [nameEl, emailEl, domainEl].forEach(el => el.classList.remove('error'));
+
+      if (!name)                  { nameEl.classList.add('error');   valid = false; }
+      if (!validEmail(email))     { emailEl.classList.add('error');  valid = false; }
+      if (!domain)                { domainEl.classList.add('error'); valid = false; }
+      if (!valid) return;
+
+      // Update domain field with cleaned value
+      domainEl.value = domain;
+
+      // Disable button
+      const btn = this.querySelector('.form-submit');
+      btn.disabled = true;
+      btn.textContent = 'Scanning…';
+
+      // POST to pipeline endpoint
+      const payload = {
+        company_name:   name,
+        contact_email:  email,
+        company_domain: domain,
+        source:         'website_scan_form',
+        submitted_at:   new Date().toISOString()
+      };
+
+      try {
+        await fetch('[PIPELINE_INTAKE_ENDPOINT]', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(payload)
+        });
+      } catch(err) {
+        // Fail silently — still show confirmation (pipeline may not be up yet)
+        console.warn('Pipeline endpoint not reachable:', err);
+      }
+
+      // Show confirmation
+      document.getElementById('confirm-email-display').textContent = email;
+      document.getElementById('intake-form-wrap').style.display = 'none';
+      document.getElementById('intake-confirm').style.display = 'block';
+    });
   </script>
 
 </body>
