@@ -258,6 +258,13 @@
       max-width: 900px;
       margin: 0 auto;
     }
+    /* 5th card spans full width and centers itself */
+    .services-grid .svc-card:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+      max-width: 430px;
+      margin: 0 auto;
+      width: 100%;
+    }
     .svc-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -595,6 +602,28 @@
 
       <div class="services-grid">
 
+        <!-- Card 0: Email Impersonation (FIRST — cheapest, strongest hook) -->
+        <div class="svc-card">
+          <div class="svc-icon">📧</div>
+          <h3>Can Scammers Send Emails Pretending to Be You?</h3>
+          <div class="svc-row">
+            <span class="svc-badge badge-free">Free</span>
+            <p>We check if your email domain is protected against impersonation attacks.</p>
+          </div>
+          <div class="svc-row">
+            <span class="svc-badge badge-fix">We fix</span>
+            <p>We automatically configure SPF, DKIM, and DMARC so nobody can fake your email address.</p>
+          </div>
+          <hr class="svc-divider" />
+          <div class="svc-footer">
+            <div class="svc-price">$199 <span>one-time · done in 24h</span></div>
+            <div class="svc-btns">
+              <a class="svc-cta" href="[STRIPE_LINK_DNS]" target="_blank">Pay $199 with Card →</a>
+              <a class="svc-cta outline" href="[PAYPAL_LINK_DNS]" target="_blank">Pay with PayPal →</a>
+            </div>
+          </div>
+        </div>
+
         <!-- Card 1: Leaked Passwords -->
         <div class="svc-card">
           <div class="svc-icon">🔑</div>
@@ -617,6 +646,28 @@
           </div>
         </div>
 
+
+        <!-- Card 0: DNS / Email Spoofing -->
+        <div class="svc-card featured">
+          <div class="svc-icon">📧</div>
+          <h3>Can Scammers Send Emails Pretending to Be You?</h3>
+          <div class="svc-row">
+            <span class="svc-badge badge-free">Free</span>
+            <p>We check if your domain has the right records to prevent email impersonation — SPF, DKIM, and DMARC.</p>
+          </div>
+          <div class="svc-row">
+            <span class="svc-badge badge-fix">We fix</span>
+            <p>We configure everything — SPF, DKIM, and DMARC — so scammers can't send emails pretending to be your business.</p>
+          </div>
+          <hr class="svc-divider" />
+          <div class="svc-footer">
+            <div class="svc-price">$199 <span>one-time · done in 24h</span></div>
+            <div style="display:flex;flex-direction:column;gap:8px;width:100%">
+              <a class="svc-cta" href="https://buy.stripe.com/eVqdR95tJ11jds2bfs43S07" target="_blank">Pay $199 with Card →</a>
+              <a class="svc-cta outline" href="https://www.paypal.com/ncp/payment/4UG5XDNQJYMSQ" target="_blank">Pay with PayPal →</a>
+            </div>
+          </div>
+        </div>
         <!-- Card 2: Shadow AI -->
         <div class="svc-card">
           <div class="svc-icon">🤖</div>
