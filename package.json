@@ -1,0 +1,8 @@
+{
+  "name": "acci-security-website",
+  "version": "1.0.0",
+  "description": "ACCI Security Group website + Stripe webhook function",
+  "dependencies": {
+    "nodemailer": "^8.0.2"
+  }
+}

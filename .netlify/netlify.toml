@@ -1,0 +1,40 @@
+functionsDirectory = "/Users/minion1/.openclaw/workspace/website/netlify/functions"
+functionsDirectoryOrigin = "default"
+headersOrigin = "config"
+plugins = []
+redirects = []
+
+[build]
+publish = "/Users/minion1/.openclaw/workspace/website"
+publishOrigin = "default"
+base = "/Users/minion1/.openclaw/workspace/website"
+functions = "/Users/minion1/.openclaw/workspace/website/netlify/functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[functions]
+
+[functions."*"]
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+X-XSS-Protection = "1; mode=block"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.paypal.com https://www.paypalobjects.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-src https://www.paypal.com;"
