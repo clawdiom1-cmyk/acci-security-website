@@ -998,15 +998,13 @@
 
       // POST to pipeline endpoint
       const payload = {
-        company_name:   name,
-        contact_email:  email,
-        company_domain: domain,
-        source:         'website_scan_form',
-        submitted_at:   new Date().toISOString()
+        company_name: name,
+        email:        email,
+        domain:       domain
       };
 
       try {
-        await fetch('https://expectations-congratulations-bone-consequences.trycloudflare.com/scan', {
+        await fetch(window.ACCI_API + '/scan', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify(payload)
